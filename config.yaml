@@ -1,0 +1,39 @@
+# insights.parsers.redhat_release must be loaded and enabled for 
+# insights_messaging.formats.rhel_stats.Stats to collect product and version
+# info. This is also true for insights.formats._json.JsonFormat.
+plugins:
+    default_component_enabled: true
+    packages:
+        - insights.specs.default
+        - insights.specs.insights_archive
+        - insights.parsers.redhat_release
+        - examples.rules
+configs:
+    - name: examples.rules.bash_version.report
+      enabled: true
+service:
+    extract_timeout:
+    extract_tmp_dir:
+    format: insights_stats_worker.rhel_stats.Stats
+    target_components:
+        - examples.rules.bash_version.report
+        - insights.parsers.redhat_release
+    consumer:
+        name: insights_stats_worker.consumer.Consumer
+        kwargs:
+            queue: test_job
+            conn_params:
+                host: localhost
+                port: 5672
+    publisher:
+        name: insights_messaging.publishers.cli.StdOut
+    downloader:
+        name: insights_messaging.downloaders.localfs.LocalFS
+    watchers: []
+    #        - name: insights_messaging.watchers.stats.LocalStatWatcher
+    logging:
+        version: 1
+        disable_existing_loggers: false
+        loggers:
+            "":
+                level: WARN
