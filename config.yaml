@@ -26,7 +26,12 @@ service:
                 host: localhost
                 port: 5672
     publisher:
-        name: insights_messaging.publishers.cli.StdOut
+        name: insights_messaging.publishers.rabbitmq.RabbitMQ
+        kwargs:
+            queue: test_job_response
+            conn_params:
+                host: localhost
+                port: 5672
     downloader:
         name: insights_messaging.downloaders.localfs.LocalFS
     watchers: []
